@@ -12,8 +12,7 @@ import {
   MessageCircle, 
   Shield, 
   CheckCircle,
-  Menu,
-  X,
+  Instagram,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -58,7 +57,13 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 export default function App() {
   const [currentService, setCurrentService] = useState(0);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentService((prev) => (prev + 1) % SERVICES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const nextService = () => {
     setCurrentService((prev) => (prev + 1) % SERVICES.length);
@@ -115,37 +120,7 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Mobile Nav Toggle */}
-      <div className="md:hidden fixed top-6 right-6 z-[100]">
-        <button 
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="p-3 rounded-full bg-slate-900/80 border border-white/10 text-white backdrop-blur-xl"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden fixed inset-0 z-[90] bg-[#020617]/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-8 text-2xl font-bold uppercase tracking-widest"
-          >
-            <a href="#servicios" onClick={() => setIsMenuOpen(false)} className="hover:text-cyan-400">Servicios</a>
-            <a href="#ubicacion" onClick={() => setIsMenuOpen(false)} className="hover:text-cyan-400">Ubicación</a>
-            <a 
-              href={budgetLink}
-              className="bg-cyan-500 text-slate-900 px-8 py-4 rounded-full text-lg"
-            >
-              Presupuesto
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      {/* Main Content Area */}
       <main className="relative z-10 px-6 max-w-7xl mx-auto">
         {/* Services Section */}
         <section id="servicios" className="py-20">
@@ -156,30 +131,28 @@ export default function App() {
                 Servicios <br /> Especializados
               </h2>
             </div>
-            <div className="flex gap-4">
-              <button 
-                onClick={prevService}
-                className="p-4 rounded-2xl service-card hover:bg-cyan-500/10 transition-all active:scale-90"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button 
-                onClick={nextService}
-                className="p-4 rounded-2xl service-card hover:bg-cyan-500/10 transition-all active:scale-90"
-              >
-                <ChevronRight size={24} />
-              </button>
-            </div>
           </div>
 
           <div className="relative">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentService}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="service-card rounded-[2.5rem] overflow-hidden p-8 md:p-20 text-center flex flex-col items-center"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = Math.abs(offset.x) > 50 && Math.abs(velocity.x) > 500;
+                  if (swipe) {
+                    if (offset.x > 0) {
+                      prevService();
+                    } else {
+                      nextService();
+                    }
+                  }
+                }}
+                className="service-card rounded-[2.5rem] overflow-hidden p-8 md:p-20 text-center flex flex-col items-center cursor-grab active:cursor-grabbing touch-none"
               >
                 {(() => {
                   const Icon = SERVICES[currentService].icon;
@@ -294,19 +267,37 @@ export default function App() {
         </footer>
       </main>
 
-      {/* Floating WhatsApp Button */}
-      <motion.a 
-        href={whatsappLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="fixed bottom-24 right-6 md:bottom-32 md:right-10 z-[100] bg-[#25d366] text-white p-4 md:p-5 rounded-full shadow-[0_0_20px_rgba(37,211,102,0.4)] flex items-center justify-center animate-bounce"
-      >
-        <WhatsAppIcon className="w-8 h-8 md:w-9 md:h-9" />
-      </motion.a>
+      {/* Floating Buttons */}
+      <div className="fixed bottom-24 right-6 md:bottom-32 md:right-10 z-[100] flex flex-col gap-4 items-center">
+        {/* WhatsApp Button */}
+        <motion.a 
+          href={whatsappLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="bg-[#25d366] text-white p-4 md:p-5 rounded-full shadow-[0_0_20px_rgba(37,211,102,0.4)] flex items-center justify-center animate-bounce"
+        >
+          <WhatsAppIcon className="w-8 h-8 md:w-9 md:h-9" />
+        </motion.a>
+
+        {/* Instagram Button */}
+        <motion.a 
+          href="https://www.instagram.com/cctvpro.py?igsh=dDZwaTh0MWVhODJw"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white p-4 md:p-5 rounded-full shadow-[0_0_20px_rgba(238,42,123,0.4)] flex items-center justify-center"
+        >
+          <Instagram size={32} className="w-8 h-8 md:w-9 md:h-9" />
+        </motion.a>
+      </div>
     </div>
   );
 }
