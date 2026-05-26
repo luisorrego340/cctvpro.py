@@ -73,15 +73,15 @@ export default function App() {
     setCurrentService((prev) => (prev - 1 + SERVICES.length) % SERVICES.length);
   };
 
-  const whatsappLink = "https://wa.me/595985666661";
+  const whatsappLink = "https://wa.me/595976824229";
   const budgetMessage = encodeURIComponent("Hola, quiero solicitar un presupuesto!");
   const budgetLink = `${whatsappLink}?text=${budgetMessage}`;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-[#f8fafc] font-sans selection:bg-cyan-500 selection:text-white relative overflow-hidden tech-grid">
+    <div className="min-h-screen bg-[#020617] text-[#f8fafc] font-sans selection:bg-sky-500 selection:text-white relative overflow-hidden tech-grid">
       {/* Glow Effects */}
       <div className="fixed top-0 right-0 w-[600px] h-[600px] glow-circle -mr-48 -mt-48 pointer-events-none z-0" />
-      <div className="fixed bottom-0 left-0 w-[400px] h-[400px] glow-circle -ml-24 -mb-24 pointer-events-none z-0" />
+      <div className="fixed bottom-0 left-0 w-[400px] h-[400px] glow-circle-navy -ml-24 -mb-24 pointer-events-none z-0" />
 
       {/* Dynamic Background Images (Preserving user request for dynamic camera background) */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
@@ -102,7 +102,7 @@ export default function App() {
         <motion.h1 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-5xl md:text-7xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4"
+          className="text-5xl md:text-7xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-white to-blue-600 mb-4"
         >
           CCTVPRO.PY
         </motion.h1>
@@ -110,11 +110,11 @@ export default function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-[10px] md:text-xs tracking-[0.6em] font-semibold text-cyan-200/80 uppercase mb-4"
+          className="text-[10px] md:text-xs tracking-[0.6em] font-semibold text-sky-200/80 uppercase mb-4"
         >
           SEGURIDAD • CONFIANZA • TECNOLOGÍA
         </motion.p>
-        <div className="flex items-center justify-center gap-2 text-cyan-500/60">
+        <div className="flex items-center justify-center gap-2 text-sky-500/60">
           <MapPin size={16} />
           <span className="text-sm font-medium tracking-wide uppercase">Santa Rita, Alto Paraná</span>
         </div>
@@ -126,7 +126,7 @@ export default function App() {
         <section id="servicios" className="py-20">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div className="text-center md:text-left">
-              <p className="text-cyan-400 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Excelencia en Seguridad</p>
+              <p className="text-sky-400 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Excelencia en Seguridad</p>
               <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none uppercase">
                 Servicios <br /> Especializados
               </h2>
@@ -158,8 +158,8 @@ export default function App() {
                   const Icon = SERVICES[currentService].icon;
                   return (
                     <div className="max-w-3xl flex flex-col items-center gap-8">
-                      <div className="w-24 h-24 bg-cyan-500/10 rounded-[2rem] flex items-center justify-center mb-4 shadow-2xl shadow-cyan-500/20 border border-cyan-500/20">
-                        <Icon size={48} className="text-cyan-400" />
+                      <div className="w-24 h-24 bg-sky-500/10 rounded-[2rem] flex items-center justify-center mb-4 shadow-2xl shadow-sky-500/20 border border-sky-500/20">
+                        <Icon size={48} className="text-sky-400" />
                       </div>
                       
                       <div className="flex flex-col gap-6">
@@ -171,11 +171,10 @@ export default function App() {
                         </p>
                         
 
-
                         <div className="pt-10">
                           <a 
                             href={budgetLink}
-                            className="inline-flex items-center gap-4 bg-cyan-500 hover:bg-cyan-400 text-[#020617] px-12 py-5 rounded-full font-black uppercase tracking-widest text-lg transition-all shadow-2xl shadow-cyan-500/30 active:scale-95"
+                            className="inline-flex items-center gap-4 bg-sky-500 hover:bg-sky-400 text-[#020617] px-12 py-5 rounded-full font-black uppercase tracking-widest text-lg transition-all shadow-2xl shadow-sky-500/30 active:scale-95"
                           >
                             Solicitar Presupuesto <MessageCircle size={24} />
                           </a>
@@ -194,7 +193,7 @@ export default function App() {
                   onClick={() => setCurrentService(idx)}
                   className={cn(
                     "h-1 transition-all duration-500 rounded-full",
-                    currentService === idx ? "w-16 bg-cyan-500 shadow-glow shadow-cyan-500/50" : "w-4 bg-slate-800"
+                    currentService === idx ? "w-16 bg-sky-400 shadow-glow shadow-sky-400/50" : "w-4 bg-slate-800"
                   )}
                 />
               ))}
@@ -204,10 +203,10 @@ export default function App() {
 
         {/* Location Section */}
         <section id="ubicacion" className="py-20">
-          <div className="service-card rounded-[2.5rem] p-8 md:p-16 border border-cyan-500/10 flex flex-col md:flex-row gap-12 items-center">
+          <div className="service-card rounded-[2.5rem] p-8 md:p-16 border border-sky-400/10 flex flex-col md:flex-row gap-12 items-center">
             <div className="flex-1 space-y-6">
-              <p className="text-cyan-400 font-bold uppercase tracking-widest text-[10px]">Presencia Regional</p>
-              <h3 className="text-4xl md:text-6xl font-black tracking-tight leading-none">SANTA RITA <br /> <span className="text-cyan-500">PARAGUAY</span></h3>
+              <p className="text-sky-400 font-bold uppercase tracking-widest text-[10px]">Presencia Regional</p>
+              <h3 className="text-4xl md:text-6xl font-black tracking-tight leading-none">SANTA RITA <br /> <span className="text-sky-400">PARAGUAY</span></h3>
               <p className="text-xl text-slate-400 leading-relaxed font-light">
                 Garantizamos seguridad total en Santa Rita y toda la zona de Alto Paraná con técnicos altamente capacitados.
               </p>
@@ -222,8 +221,8 @@ export default function App() {
                  alt="Paraguay Region" 
                  className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
                  referrerPolicy="no-referrer"
-               />
-               <div className="absolute inset-0 bg-cyan-500/10" />
+                />
+               <div className="absolute inset-0 bg-sky-500/10" />
             </div>
           </div>
         </section>
@@ -236,7 +235,7 @@ export default function App() {
             className="max-w-4xl mx-auto px-4"
           >
             <h3 className="text-4xl md:text-7xl font-black tracking-tighter leading-none mb-8 uppercase italic">
-              Proteja lo que <br /> <span className="text-cyan-500">Más Quiere</span>
+              Proteja lo que <br /> <span className="text-sky-400">Más Quiere</span>
             </h3>
             <p className="text-xl md:text-2xl text-slate-300 mb-12 font-light leading-relaxed">
               No deje su seguridad al azar. Solicite un presupuesto profesional hoy mismo y experimente la tranquilidad total.
@@ -245,7 +244,7 @@ export default function App() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               href={budgetLink}
-              className="inline-flex items-center gap-4 bg-cyan-500 hover:bg-cyan-400 text-slate-900 px-12 py-6 rounded-full font-black text-xl uppercase tracking-wider shadow-2xl shadow-cyan-500/30 transition-all"
+              className="inline-flex items-center gap-4 bg-sky-500 hover:bg-sky-400 text-[#020617] px-12 py-6 rounded-full font-black text-xl uppercase tracking-wider shadow-2xl shadow-sky-500/30 transition-all"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -258,7 +257,7 @@ export default function App() {
         {/* Mini Footer */}
         <footer className="py-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-60">
           <div className="flex flex-col items-center md:items-start">
-            <span className="text-2xl font-black tracking-tighter text-cyan-400">CCTVPRO.PY</span>
+            <span className="text-2xl font-black tracking-tighter text-sky-400">CCTVPRO.PY</span>
             <span className="text-[10px] tracking-[0.2em] font-bold text-slate-500 uppercase">© 2026 Santa Rita, Paraguay</span>
           </div>
           <div className="text-[10px] font-mono uppercase tracking-[0.4em] text-slate-500">
