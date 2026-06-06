@@ -74,7 +74,7 @@ export default function App() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-50 px-6 py-12 flex flex-col items-center max-w-7xl mx-auto text-center">
+      <nav className="relative z-50 px-6 pt-8 pb-4 flex flex-col items-center max-w-7xl mx-auto text-center">
         <motion.h1 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -99,8 +99,8 @@ export default function App() {
       {/* Main Content Area */}
       <main className="relative z-10 px-6 max-w-7xl mx-auto">
         {/* Services Section */}
-        <section id="servicios" className="py-20">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <section id="servicios" className="pt-8 pb-4">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-6 gap-6">
             <div className="text-center md:text-left">
               <p className="text-yellow-400 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Excelencia en Seguridad</p>
               <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none uppercase text-white">
@@ -150,15 +150,15 @@ export default function App() {
         </section>
 
         {/* Location Section */}
-        <section id="ubicacion" className="py-20">
-          <div className="service-card rounded-[2.5rem] p-8 md:p-16 border border-yellow-400/10 flex flex-col md:flex-row gap-12 items-center">
-            <div className="flex-1 space-y-6">
+        <section id="ubicacion" className="pt-4 pb-8">
+          <div className="service-card rounded-[2rem] p-6 md:p-10 border border-yellow-400/10 flex flex-col md:flex-row gap-6 items-center">
+            <div className="flex-1 space-y-4">
               <p className="text-yellow-400 font-bold uppercase tracking-widest text-[10px]">Presencia Regional</p>
               <h3 className="text-4xl md:text-6xl font-black tracking-tight leading-none text-white">SANTA RITA <br /> <span className="text-yellow-400">PARAGUAY</span></h3>
               <p className="text-xl text-slate-400 leading-relaxed font-light">
                 Garantizamos seguridad total en Santa Rita y toda la zona de Alto Paraná con técnicos altamente capacitados.
               </p>
-              <div className="flex flex-wrap gap-4 pt-4">
+              <div className="flex flex-wrap gap-2 pt-2">
                 <div className="px-5 py-2 rounded-full bg-slate-900 border border-white/5 text-sm font-semibold tracking-widest text-slate-300 uppercase">Alto Paraná</div>
                 <div className="px-5 py-2 rounded-full bg-slate-900 border border-white/5 text-sm font-semibold tracking-widest text-slate-300 uppercase">24/7 Cobertura</div>
               </div>
@@ -208,34 +208,34 @@ export default function App() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-32 text-center relative overflow-hidden">
+        <section className="py-12 md:py-16 text-center relative overflow-hidden">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="max-w-4xl mx-auto px-4"
           >
-            <h3 className="text-4xl md:text-7xl font-black tracking-tighter leading-none mb-8 uppercase italic text-white">
+            <h3 className="text-3xl md:text-6xl font-black tracking-tighter leading-none mb-4 uppercase italic text-white">
               Proteja lo que <br /> <span className="text-yellow-400">Más Quiere</span>
             </h3>
-            <p className="text-xl md:text-2xl text-slate-300 mb-12 font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-300 mb-6 font-light leading-relaxed">
               No deje su seguridad al azar. Solicite un presupuesto profesional hoy mismo y experimente la tranquilidad total.
             </p>
             <motion.a 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               href={budgetLink}
-              className="inline-flex items-center gap-4 bg-yellow-400 hover:bg-yellow-300 text-black px-12 py-6 rounded-full font-black text-xl uppercase tracking-wider shadow-2xl shadow-yellow-400/30 transition-all"
+              className="inline-flex items-center gap-4 bg-yellow-400 hover:bg-yellow-300 text-black px-10 py-5 rounded-full font-black text-lg uppercase tracking-wider shadow-2xl shadow-yellow-400/30 transition-all"
               target="_blank"
               rel="noopener noreferrer"
             >
               Solicitar Presupuesto Directo
-              <MessageCircle size={28} />
+              <MessageCircle size={24} />
             </motion.a>
           </motion.div>
         </section>
 
         {/* Mini Footer */}
-        <footer className="py-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-60">
+        <footer className="py-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60">
           <div className="flex flex-col items-center md:items-start">
             <span className="text-2xl font-black tracking-tighter text-yellow-400">CCTVPRO.PY</span>
             <span className="text-[10px] tracking-[0.2em] font-bold text-slate-500 uppercase">© 2026 Santa Rita, Paraguay</span>
