@@ -49,6 +49,31 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function App() {
+  const [showButtons, setShowButtons] = React.useState(true);
+
+  React.useEffect(() => {
+    let scrollTimeout: any;
+
+    const handleScroll = () => {
+      // Hide buttons immediately when scrolling begins or continues
+      setShowButtons(false);
+
+      // Clear previous timeout
+      clearTimeout(scrollTimeout);
+
+      // Set timeout to show buttons again 600ms after scrolling stops
+      scrollTimeout = setTimeout(() => {
+        setShowButtons(true);
+      }, 600);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, []);
+
   const whatsappLink = "https://wa.me/595976824229";
   const budgetMessage = encodeURIComponent("Hola, quiero solicitar un presupuesto!");
   const budgetLink = `${whatsappLink}?text=${budgetMessage}`;
@@ -247,7 +272,16 @@ export default function App() {
       </main>
 
       {/* Floating Buttons */}
-      <div className="fixed bottom-24 right-6 md:bottom-32 md:right-10 z-[100] flex flex-col gap-4 items-center">
+      <motion.div 
+        animate={{ 
+          opacity: showButtons ? 1 : 0,
+          scale: showButtons ? 1 : 0.8,
+          y: showButtons ? 0 : 20
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="fixed bottom-24 right-6 md:bottom-32 md:right-10 z-[100] flex flex-col gap-4 items-center"
+        style={{ pointerEvents: showButtons ? 'auto' : 'none' }}
+      >
         {/* WhatsApp Button */}
         <motion.a 
           href={whatsappLink}
@@ -276,7 +310,7 @@ export default function App() {
         >
           <Instagram size={32} className="w-8 h-8 md:w-9 md:h-9" />
         </motion.a>
-      </div>
+      </motion.div>
     </div>
   );
 }
