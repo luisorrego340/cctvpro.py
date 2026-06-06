@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { 
   Camera, 
   Settings, 
@@ -12,11 +12,9 @@ import {
   MessageCircle, 
   Shield, 
   CheckCircle,
-  Instagram,
-  ChevronLeft,
-  ChevronRight
+  Instagram
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -35,11 +33,6 @@ const SERVICES = [
     title: "SOPORTE Y MANTENIMIENTO",
     description: "Asistencia técnica especializada y mantenimiento preventivo para garantizar el funcionamiento 24/7.",
     icon: Settings,
-  },
-  {
-    title: "ACCESO REMOTO",
-    description: "Vea sus cámaras desde cualquier lugar del mundo a través de su smartphone o tablet.",
-    icon: Smartphone,
   }
 ];
 
@@ -56,23 +49,6 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function App() {
-  const [currentService, setCurrentService] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentService((prev) => (prev + 1) % SERVICES.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const nextService = () => {
-    setCurrentService((prev) => (prev + 1) % SERVICES.length);
-  };
-
-  const prevService = () => {
-    setCurrentService((prev) => (prev - 1 + SERVICES.length) % SERVICES.length);
-  };
-
   const whatsappLink = "https://wa.me/595976824229";
   const budgetMessage = encodeURIComponent("Hola, quiero solicitar un presupuesto!");
   const budgetLink = `${whatsappLink}?text=${budgetMessage}`;
@@ -127,77 +103,49 @@ export default function App() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div className="text-center md:text-left">
               <p className="text-yellow-400 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Excelencia en Seguridad</p>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none uppercase">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none uppercase text-white">
                 Servicios <br /> Especializados
               </h2>
             </div>
           </div>
 
-          <div className="relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentService}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                onDragEnd={(e, { offset, velocity }) => {
-                  const swipe = Math.abs(offset.x) > 50 && Math.abs(velocity.x) > 500;
-                  if (swipe) {
-                    if (offset.x > 0) {
-                      prevService();
-                    } else {
-                      nextService();
-                    }
-                  }
-                }}
-                className="service-card rounded-[2.5rem] overflow-hidden p-8 md:p-20 text-center flex flex-col items-center cursor-grab active:cursor-grabbing touch-none"
-              >
-                {(() => {
-                  const Icon = SERVICES[currentService].icon;
-                  return (
-                    <div className="max-w-3xl flex flex-col items-center gap-8">
-                      <div className="w-24 h-24 bg-yellow-400/10 rounded-[2rem] flex items-center justify-center mb-4 shadow-2xl shadow-yellow-400/20 border border-yellow-400/20">
-                        <Icon size={48} className="text-yellow-400" />
-                      </div>
-                      
-                      <div className="flex flex-col gap-6">
-                        <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-white">
-                          {SERVICES[currentService].title}
-                        </h3>
-                        <p className="text-xl md:text-2xl text-slate-400 leading-relaxed font-light">
-                          {SERVICES[currentService].description}
-                        </p>
-                        
-
-                        <div className="pt-10">
-                          <a 
-                            href={budgetLink}
-                            className="inline-flex items-center gap-4 bg-yellow-400 hover:bg-yellow-300 text-black px-12 py-5 rounded-full font-black uppercase tracking-widest text-lg transition-all shadow-2xl shadow-yellow-400/30 active:scale-95"
-                          >
-                            Solicitar Presupuesto <MessageCircle size={24} />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </motion.div>
-            </AnimatePresence>
-            
-            <div className="flex gap-2 mt-8 justify-center">
-              {SERVICES.map((_, idx) => (
-                <button 
+          <div className="grid grid-cols-2 gap-3 sm:gap-8 max-w-5xl mx-auto">
+            {SERVICES.map((service, idx) => {
+              const Icon = service.icon;
+              const serviceMessage = encodeURIComponent(`Hola, quiero solicitar presupuesto para ${service.title}!`);
+              const serviceBudgetLink = `${whatsappLink}?text=${serviceMessage}`;
+              return (
+                <motion.div
                   key={idx}
-                  onClick={() => setCurrentService(idx)}
-                  className={cn(
-                    "h-1 transition-all duration-500 rounded-full",
-                    currentService === idx ? "w-16 bg-yellow-400 shadow-glow shadow-yellow-400/50" : "w-4 bg-slate-800"
-                  )}
-                />
-              ))}
-            </div>
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="service-card rounded-[1.5rem] sm:rounded-[2rem] p-4 sm:p-8 md:p-10 flex flex-col justify-between items-center text-center border border-yellow-400/10 hover:border-yellow-400/35 transition-all duration-300 relative group aspect-[3/4.5] sm:aspect-auto"
+                >
+                  <div className="absolute inset-0 bg-yellow-400/[0.01] opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-[1.5rem] sm:rounded-[2rem] pointer-events-none" />
+                  <div className="flex flex-col items-center w-full">
+                    <div className="w-10 h-10 sm:w-16 sm:h-16 bg-yellow-400/10 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-yellow-400/20 group-hover:scale-105 transition-transform duration-300">
+                      <Icon className="text-yellow-400 w-5 h-5 sm:w-8 sm:h-8" />
+                    </div>
+                    <h3 className="text-xs sm:text-lg md:text-2xl font-black uppercase tracking-tight text-white mb-2 sm:mb-4 h-10 sm:h-auto flex items-center justify-center">
+                      {service.title}
+                    </h3>
+                    <p className="text-[10px] sm:text-sm md:text-base text-slate-400 leading-tight sm:leading-relaxed font-light mb-4 sm:mb-8 line-clamp-4 sm:line-clamp-none">
+                      {service.description}
+                    </p>
+                  </div>
+                  <a 
+                    href={serviceBudgetLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-1 sm:gap-2 bg-yellow-400 hover:bg-yellow-300 text-black py-2.5 px-2 sm:py-4 sm:px-6 rounded-lg sm:rounded-xl font-black uppercase tracking-wider text-[9px] sm:text-xs transition-all shadow-md sm:shadow-lg active:scale-95"
+                  >
+                    Cotizar <span className="hidden sm:inline">Servicio</span> <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </a>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
 
@@ -216,23 +164,45 @@ export default function App() {
               </div>
             </div>
             
-            {/* Clickable Map Card of Paraguay */}
+            {/* Clickable Map Link (Icon Only, No Image) */}
             <a 
               href="https://maps.app.goo.gl/WtTKs2Pa1BBzXmyi7"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full md:w-1/2 aspect-video rounded-3xl overflow-hidden border border-yellow-400/10 relative group block cursor-pointer shadow-xl shadow-yellow-500/5"
+              className="w-full md:w-1/2 aspect-video rounded-3xl border border-yellow-400/20 relative group flex flex-col items-center justify-center cursor-pointer bg-black shadow-2xl shadow-yellow-500/5 hover:border-yellow-400/40 transition-all duration-500 p-8 text-center overflow-hidden"
             >
-               <img 
-                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Paraguay_-_Location_Map_%282013%29_-_PRY_-_UNOCHA.svg/800px-Paraguay_-_Location_Map_%282013%29_-_PRY_-_UNOCHA.svg.png" 
-                 alt="Mapa de Paraguay" 
-                 className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-1000 invert filter brightness-90 contrast-125"
-                 referrerPolicy="no-referrer"
-               />
-               <div className="absolute inset-0 bg-yellow-500/5 group-hover:bg-yellow-500/0 transition-all duration-500" />
-               <div className="absolute bottom-4 right-4 bg-black/90 group-hover:bg-yellow-400 group-hover:text-black border border-yellow-400/20 text-yellow-400 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all">
-                 Ver en Google Maps
+               {/* High-tech tech HUD grid lines */}
+               <div className="absolute inset-0 bg-[linear-gradient(to_right,#eab30805_1px,transparent_1px),linear-gradient(to_bottom,#eab30805_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none z-10" />
+
+               {/* CCTV/HUD overlay elements */}
+               <div className="absolute top-4 left-4 z-20 font-mono text-[9px] text-yellow-500/80 bg-black/70 px-2 py-1 rounded border border-yellow-500/20 tracking-wider">
+                 REG: LATAM // PY_SR_AP
                </div>
+               
+               <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 font-mono text-[9px] text-yellow-500 bg-black/70 px-2 py-1 rounded border border-yellow-500/20 tracking-wider">
+                 <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping" />
+                 GPS_ONLINE
+               </div>
+
+               {/* Map Icon Element */}
+               <div className="relative z-20 flex flex-col items-center gap-4 group-hover:scale-105 transition-all duration-500">
+                 <div className="relative">
+                   {/* Ripple glow circles behind map icon */}
+                   <span className="absolute -inset-4 rounded-full bg-yellow-400/5 group-hover:bg-yellow-400/10 animate-ping duration-1000" />
+                   <span className="absolute -inset-8 rounded-full bg-yellow-400/5 group-hover:bg-yellow-400/10 animate-pulse duration-2000" />
+                   
+                   <div className="w-20 h-20 rounded-full bg-yellow-400/10 border border-yellow-400/30 flex items-center justify-center text-yellow-500 group-hover:text-yellow-400 group-hover:border-yellow-400/60 shadow-lg transition-all">
+                     <MapPin size={40} className="animate-bounce" />
+                   </div>
+                 </div>
+                 
+                 <div className="space-y-1">
+                   <h4 className="text-yellow-400 font-extrabold uppercase tracking-widest text-sm">Abrir Ubicación</h4>
+                   <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.2em] group-hover:text-yellow-400/60 transition-colors">Ver en Google Maps</p>
+                 </div>
+               </div>
+
+               <div className="absolute inset-0 bg-yellow-500/[0.01] group-hover:bg-yellow-500/[0.03] transition-all duration-500" />
             </a>
           </div>
         </section>
