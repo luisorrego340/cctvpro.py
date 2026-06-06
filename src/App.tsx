@@ -12,9 +12,11 @@ import {
   MessageCircle, 
   Shield, 
   CheckCircle,
-  Instagram
+  Instagram,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -50,6 +52,28 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 export default function App() {
   const [showButtons, setShowButtons] = React.useState(true);
+  const [currentService, setCurrentService] = React.useState(0);
+  const [direction, setDirection] = React.useState(0); // -1 for left slide, 1 for right slide
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const slideNext = React.useCallback(() => {
+    setDirection(1);
+    setCurrentService((prev) => (prev + 1) % SERVICES.length);
+  }, []);
+
+  const slidePrev = React.useCallback(() => {
+    setDirection(-1);
+    setCurrentService((prev) => (prev - 1 + SERVICES.length) % SERVICES.length);
+  }, []);
+
+  React.useEffect(() => {
+    if (isHovered) return;
+    // Comfortable reading time (8 seconds) with automatic slide-over
+    const interval = setInterval(() => {
+      slideNext();
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [isHovered, slideNext]);
 
   React.useEffect(() => {
     let scrollTimeout: any;
@@ -134,43 +158,208 @@ export default function App() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-8 max-w-5xl mx-auto">
-            {SERVICES.map((service, idx) => {
-              const Icon = service.icon;
-              const serviceMessage = encodeURIComponent(`Hola, quiero solicitar presupuesto para ${service.title}!`);
-              const serviceBudgetLink = `${whatsappLink}?text=${serviceMessage}`;
-              return (
-                <motion.div
+          <div 
+            className="relative max-w-5xl mx-auto w-full px-4 sm:px-12 md:px-20 overflow-visible py-8 flex flex-col items-center justify-center min-h-[350px] sm:min-h-[390px] md:min-h-[420px]"
+            style={{ perspective: "1500px", transformStyle: "preserve-3d" }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {/* 3D Revolving Door Wrapper */}
+            <div className="relative w-full max-w-[280px] sm:max-w-[460px] md:max-w-[560px] h-[310px] sm:h-[350px] md:h-[380px] mx-auto" style={{ transformStyle: "preserve-3d" }}>
+              {(() => {
+                const prevIdx = (currentService - 1 + SERVICES.length) % SERVICES.length;
+                const nextIdx = (currentService + 1) % SERVICES.length;
+                
+                const prevService = SERVICES[prevIdx];
+                const currentServiceObj = SERVICES[currentService];
+                const nextService = SERVICES[nextIdx];
+                
+                const PrevIcon = prevService.icon;
+                const CurrentIcon = currentServiceObj.icon;
+                const NextIcon = nextService.icon;
+                
+                const serviceMessage = encodeURIComponent(`Hola, quiero solicitar presupuesto para ${currentServiceObj.title}!`);
+                const serviceBudgetLink = `${whatsappLink}?text=${serviceMessage}`;
+                
+                return (
+                  <>
+                    {/* Previous Service Card (Left Revolving Pane) */}
+                    <motion.div
+                      key={`prev-${prevIdx}`}
+                      onClick={slidePrev}
+                      className="service-card absolute inset-0 rounded-[2rem] border border-yellow-400/20 bg-slate-950/85 flex flex-col justify-center items-center p-5 sm:p-8 md:p-10 text-center select-none cursor-pointer group/peek origin-right shadow-2xl"
+                      initial={{ 
+                        x: "-50%", 
+                        rotateY: 35, 
+                        scale: 0.9, 
+                        z: -150, 
+                        opacity: 0 
+                      }}
+                      animate={{ 
+                        x: "-50%", 
+                        rotateY: 30, 
+                        scale: 0.94, 
+                        z: -120, 
+                        opacity: 0.85 
+                      }}
+                      exit={{ 
+                        x: "-50%", 
+                        rotateY: 35, 
+                        scale: 0.9, 
+                        z: -150, 
+                        opacity: 0 
+                      }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ backfaceVisibility: "hidden" }}
+                    >
+                      <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                        <div className="w-10 h-10 sm:w-14 sm:h-14 bg-yellow-400/10 rounded-xl flex items-center justify-center border border-yellow-400/20 group-hover/peek:scale-105 transition-transform duration-300">
+                          <PrevIcon className="text-yellow-400 w-5 h-5 sm:w-7 sm:h-7" />
+                        </div>
+                        <h4 className="text-sm sm:text-lg md:text-xl font-black text-white uppercase tracking-tight max-w-[180px] sm:max-w-[240px] text-center line-clamp-2 leading-tight">
+                          {prevService.title}
+                        </h4>
+                        <p className="hidden sm:line-clamp-3 text-[11px] sm:text-xs text-slate-400 font-light max-w-[180px] leading-snug">
+                          {prevService.description}
+                        </p>
+                      </div>
+                    </motion.div>
+
+                    {/* Active Service Card (Central Revolving Pane) */}
+                    <motion.div
+                      key={`current-${currentService}`}
+                      className="service-card absolute inset-0 rounded-[2rem] border border-yellow-400/30 bg-slate-950/90 flex flex-col justify-between items-center p-5 sm:p-8 md:p-10 text-center shadow-[0_0_50px_rgba(250,204,21,0.06)] z-10"
+                      initial={{ 
+                        x: direction > 0 ? "50%" : "-50%", 
+                        rotateY: direction > 0 ? -30 : 30, 
+                        scale: 0.94, 
+                        z: -120, 
+                        opacity: 0 
+                      }}
+                      animate={{ 
+                        x: "0%", 
+                        rotateY: 0, 
+                        scale: 1, 
+                        z: 0, 
+                        opacity: 1 
+                      }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ backfaceVisibility: "hidden" }}
+                    >
+                      <div className="flex flex-col items-center max-w-3xl mx-auto flex-grow justify-center">
+                        {/* Compact Icon */}
+                        <div className="w-11 h-11 sm:w-16 sm:h-16 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-3 sm:mb-4 border border-yellow-400/20 shadow-2xl">
+                          <CurrentIcon className="text-yellow-400 w-6 h-6 sm:w-8 sm:h-8" />
+                        </div>
+                        
+                        <h3 className="text-lg sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-white mb-2">
+                          {currentServiceObj.title}
+                        </h3>
+                        
+                        <p className="text-xs sm:text-base md:text-lg text-slate-200 leading-normal sm:leading-relaxed font-normal max-w-2xl px-2 sm:px-0">
+                          {currentServiceObj.description}
+                        </p>
+                      </div>
+                      
+                      <a 
+                        href={serviceBudgetLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black py-2.5 px-6 sm:py-3.5 sm:px-10 rounded-xl font-black uppercase tracking-wider text-[11px] sm:text-xs md:text-sm transition-all shadow-lg active:scale-95 mt-4"
+                      >
+                        Cotizar Servicio <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </a>
+                    </motion.div>
+
+                    {/* Next Service Card (Right Revolving Pane) */}
+                    <motion.div
+                      key={`next-${nextIdx}`}
+                      onClick={slideNext}
+                      className="service-card absolute inset-0 rounded-[2rem] border border-yellow-400/20 bg-slate-950/85 flex flex-col justify-center items-center p-5 sm:p-8 md:p-10 text-center select-none cursor-pointer group/peek origin-left shadow-2xl"
+                      initial={{ 
+                        x: "50%", 
+                        rotateY: -35, 
+                        scale: 0.9, 
+                        z: -150, 
+                        opacity: 0 
+                      }}
+                      animate={{ 
+                        x: "50%", 
+                        rotateY: -30, 
+                        scale: 0.94, 
+                        z: -120, 
+                        opacity: 0.85 
+                      }}
+                      exit={{ 
+                        x: "50%", 
+                        rotateY: -35, 
+                        scale: 0.9, 
+                        z: -150, 
+                        opacity: 0 
+                      }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ backfaceVisibility: "hidden" }}
+                    >
+                      <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                        <div className="w-10 h-10 sm:w-14 sm:h-14 bg-yellow-400/10 rounded-xl flex items-center justify-center border border-yellow-400/20 group-hover/peek:scale-105 transition-transform duration-300">
+                          <NextIcon className="text-yellow-400 w-5 h-5 sm:w-7 sm:h-7" />
+                        </div>
+                        <h4 className="text-sm sm:text-lg md:text-xl font-black text-white uppercase tracking-tight max-w-[180px] sm:max-w-[240px] text-center line-clamp-2 leading-tight">
+                          {nextService.title}
+                        </h4>
+                        <p className="hidden sm:line-clamp-3 text-[11px] sm:text-xs text-slate-400 font-light max-w-[180px] leading-snug">
+                          {nextService.description}
+                        </p>
+                      </div>
+                    </motion.div>
+                  </>
+                );
+              })()}
+            </div>
+
+            {/* Left Navigation Arrow (Now outside 3D wrapper for wider spacing) */}
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                slidePrev();
+              }}
+              className="absolute left-1 sm:left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/80 border border-yellow-400/20 text-yellow-400 hover:text-black hover:bg-yellow-400 hover:border-yellow-400 flex items-center justify-center transition-all shadow-md active:scale-95"
+              aria-label="Anterior"
+            >
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Right Navigation Arrow (Now outside 3D wrapper for wider spacing) */}
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                slideNext();
+              }}
+              className="absolute right-1 sm:right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/80 border border-yellow-400/20 text-yellow-400 hover:text-black hover:bg-yellow-400 hover:border-yellow-400 flex items-center justify-center transition-all shadow-md active:scale-95"
+              aria-label="Siguiente"
+            >
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Slider Dots / Indicators */}
+            <div className="flex gap-2.5 mt-4 justify-center items-center">
+              {SERVICES.map((_, idx) => (
+                <button 
                   key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="service-card rounded-[1.5rem] sm:rounded-[2rem] p-4 sm:p-8 md:p-10 flex flex-col justify-between items-center text-center border border-yellow-400/10 hover:border-yellow-400/35 transition-all duration-300 relative group aspect-[3/4.5] sm:aspect-auto"
-                >
-                  <div className="absolute inset-0 bg-yellow-400/[0.01] opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-[1.5rem] sm:rounded-[2rem] pointer-events-none" />
-                  <div className="flex flex-col items-center w-full">
-                    <div className="w-10 h-10 sm:w-16 sm:h-16 bg-yellow-400/10 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-yellow-400/20 group-hover:scale-105 transition-transform duration-300">
-                      <Icon className="text-yellow-400 w-5 h-5 sm:w-8 sm:h-8" />
-                    </div>
-                    <h3 className="text-xs sm:text-lg md:text-2xl font-black uppercase tracking-tight text-white mb-2 sm:mb-4 h-10 sm:h-auto flex items-center justify-center">
-                      {service.title}
-                    </h3>
-                    <p className="text-[10px] sm:text-sm md:text-base text-slate-400 leading-tight sm:leading-relaxed font-light mb-4 sm:mb-8 line-clamp-4 sm:line-clamp-none">
-                      {service.description}
-                    </p>
-                  </div>
-                  <a 
-                    href={serviceBudgetLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-1 sm:gap-2 bg-yellow-400 hover:bg-yellow-300 text-black py-2.5 px-2 sm:py-4 sm:px-6 rounded-lg sm:rounded-xl font-black uppercase tracking-wider text-[9px] sm:text-xs transition-all shadow-md sm:shadow-lg active:scale-95"
-                  >
-                    Cotizar <span className="hidden sm:inline">Servicio</span> <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                  </a>
-                </motion.div>
-              );
-            })}
+                  onClick={() => {
+                    setDirection(idx > currentService ? 1 : -1);
+                    setCurrentService(idx);
+                  }}
+                  className={cn(
+                    "transition-all duration-500 rounded-full",
+                    currentService === idx 
+                      ? "w-3 h-3 bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.6)] scale-110" 
+                      : "w-2 h-2 bg-slate-800 hover:bg-slate-700"
+                  )}
+                  aria-label={`Ir al servicio ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
